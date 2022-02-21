@@ -17,13 +17,13 @@ final public actor UDService {
         self.name = suiteName ?? "Standard"
     }
         
-    func value(forKey key: String) -> Any? {
+    internal func value(forKey key: String) -> Any? {
         let value = suite.value(forKey: key)
         log(action: .read, key: key, error: nil)
         return value
     }
     
-    func set(_ value: Any?, forKey key: String) {
+    internal func set(_ value: Any?, forKey key: String) {
         suite.set(value, forKey: key)
         log(action: .write, key: key, error: nil)
     }
@@ -33,7 +33,7 @@ final public actor UDService {
 
 extension UDService {
         
-    private func log(action: Logger.ServiceAction, key: String, error: Error? = nil) {
+    private func log(action: SwiftfulSaving.ServiceAction, key: String, error: Error? = nil) {
         Task {
             await Logger.shared.log(action: action, at: .userDefaults, object: "|| Key: \(key) || SuiteName: \(name)")
         }
