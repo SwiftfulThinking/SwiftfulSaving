@@ -10,14 +10,12 @@ import SwiftUI
 import Combine
 
 @propertyWrapper public struct UDStreamable<Value : UDSerializable> : DynamicProperty {
-    
-    public typealias UDService = UserDefaults
-    
+        
     private let currentValue: CurrentValueSubject<Value?, Never>
     private let key: String
     private let service: UDService
     
-    /// Stream object from UserDefaults. Saved object will load on launch. InitialValue will be used (and saved) if no previously saved object is found.
+    /// Stream object from UserDefaults. Saved object will load asynchronously on launch. InitialValue will be used (and saved) if no previously saved object is found.
     /// - Parameters:
     ///   - initialValue: If a value is provided, it will be the starting value for the struct. If a value already exists, it will overwrite the value provided.
     ///   - key: Used as the filename for object in FileManager. Will be converted to lowercase & without special characters. ("My Image" => "my_image")
@@ -28,7 +26,7 @@ import Combine
         self.service = service
         self.getObject(initialValue: initialValue)
     }
-    
+        
     public var wrappedValue: Value? {
         get {
             currentValue.value
@@ -42,26 +40,36 @@ import Combine
         currentValue
     }
             
-    /// Get saved object from FileManager. If saved value exists, publish value to currentValue publisher. If no saved value exists and an initial value was provided, save initial value.
+    /// Get saved object from UserDefaults. If saved value exists, publish value to currentValue publisher. If no saved value exists and an initial value was provided, save initial value.
+    ///  - Warning: THIS SHOULD ONLY BE CALLED ONCE, FROM THE INIT.
     private func getObject(initialValue: Value? = nil) {
-        if let savedValue: Value = service.value(forKey: key) as? Value {
-            // Use saved value
-            currentValue.send(savedValue)
-        } else if let initialValue = initialValue {
-            // Nothing was saved, save new initialValue (already set to currentValue publisher on init() )
-            setObject(newValue: initialValue)
+        Task {
+            let savedValue: Value? = await service.value(forKey: key) as? Value
+            
+            // Ensure user wrappedValue wasn't set between init and now
+            // Would only happen if wrappedValue is set immediately after init
+            guard wrappedValue == initialValue else { return }
+
+            if let savedValue = savedValue {
+                // Publish saved value
+                currentValue.send(savedValue)
+            } else if let initialValue = initialValue {
+                // Nothing was saved, save new initialValue (already set to currentValue publisher in the init)
+                setObject(newValue: initialValue)
+            }
         }
     }
             
     /// If newValue is provided, save object to FileManager. If newValue is nil, delete the file if it exists. Publish result to currentValue publisher.
     private func setObject(newValue: Value?) {
-        guard let newValue = newValue else {
-            service.set(nil, forKey: key)
-            currentValue.send(nil)
-            return
-        }
-        service.set(newValue, forKey: key)
+        // Set value, even if it is nil
+        // Publish value first, for UI & data race issues
+        // Then persist to UserDefaults
         currentValue.send(newValue)
+
+        Task {
+            await service.set(newValue, forKey: key)
+        }
     }
-    
+            
 }

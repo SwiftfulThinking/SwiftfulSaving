@@ -12,7 +12,7 @@ import XCTest
 
 class UDStreamable_Tests: XCTestCase {
     
-    let service = UserDefaults(suiteName: "testsuite")!
+    let service = UDService(suiteName: "testsuite")
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -56,13 +56,13 @@ class UDStreamable_Tests: XCTestCase {
     }
     
     func test_FMStreamable_wrappedValue_set_nil() async {
+        SwiftfulSaving.addLogging(service: .userDefaults, actions: [.write, .read, .delete, .notFound])
         let key: String = .randomString()
         let value: String? = .randomString()
         let streamable = UDStreamable(wrappedValue: value, key: key, service: service)
         let newValue: String? = nil
         streamable.wrappedValue = newValue
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-
         
         let object = streamable.wrappedValue
         XCTAssertNil(object)

@@ -34,7 +34,7 @@ import Foundation
 ///    - `Set`
 ///    - `Dictionary`
 ///    - `RawRepresentable` types
-public protocol UDSerializable {
+public protocol UDSerializable: Equatable {
 
     /// The type of the value that is stored in `UserDefaults`.
     associatedtype StoredValue

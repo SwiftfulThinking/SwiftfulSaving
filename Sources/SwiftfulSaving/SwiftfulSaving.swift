@@ -1,6 +1,9 @@
 public struct SwiftfulSaving {
-    public private(set) var text = "Hello, THIS IS A TEST!!!"
-
-    public init() {
+    
+    static func addLogging(service: Logger.ServiceType, actions: [Logger.ServiceAction]) {
+        Task {
+            await Logger.shared.addLogging(service: service, actions: actions)
+        }
     }
+
 }
