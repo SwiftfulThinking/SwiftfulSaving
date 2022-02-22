@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-@propertyWrapper struct FMStreamable<Value : DataTransformable> : DynamicProperty {
+@propertyWrapper public struct FMStreamable<Value : DataTransformable> : DynamicProperty {
     
     private let currentValue: CurrentValueSubject<Value?, Never>
     private let key: String
@@ -20,14 +20,14 @@ import SwiftUI
     ///   - initialValue: If a value is provided, it will be the starting value for the struct. If a value already exists, it will overwrite the value provided.
     ///   - key: Used as the filename for object in FileManager. Will be converted to lowercase & without special characters. ("My Image" -> "my_image")
     ///   - service: The FMService that will perform actions within the FileManager for this object.
-    init(wrappedValue initialValue: Value? = nil, key: String, service: FMService) {
+    public init(wrappedValue initialValue: Value? = nil, key: String, service: FMService) {
         self.currentValue = CurrentValueSubject<Value?, Never>(initialValue)
         self.key = key
         self.service = service
         self.getObject(initialValue: initialValue)
     }
     
-    var wrappedValue: Value? {
+    public var wrappedValue: Value? {
         get {
             currentValue.value
         }
@@ -36,7 +36,7 @@ import SwiftUI
         }
     }
     
-    var projectedValue: CurrentValueSubject<Value?, Never> {
+    public var projectedValue: CurrentValueSubject<Value?, Never> {
         currentValue
     }
             
