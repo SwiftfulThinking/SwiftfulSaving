@@ -18,7 +18,7 @@ class FMService_Tests: XCTestCase {
     override func setUpWithError() throws {
         guard service == nil else { return }
         let dir = FMDirectory(directory: .cachesDirectory)
-        let service = FMService(directory: dir, folderName: "defaulttests")
+        let service = FMService(directory: dir, folderName: "FMServiceTest")
         self.service = service
     }
 

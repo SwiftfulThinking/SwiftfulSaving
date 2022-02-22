@@ -43,7 +43,13 @@ import SwiftUI
     /// Get saved object from FileManager. If saved value exists, publish value to currentValue publisher. If no saved value exists and an initial value was provided, save initial value.
     private func getObject(initialValue: Value? = nil) {
         Task {
-            if let savedValue: Value = try? await service.object(key: key) {
+            let savedValue: Value? = try? await service.object(key: key)
+            
+            // Ensure user wrappedValue wasn't set between init and now
+            // Would only happen if wrappedValue is set immediately after init
+            guard wrappedValue?.toData() == initialValue?.toData() else { return }
+
+            if let savedValue = savedValue {
                 // Use saved value
                 currentValue.send(savedValue)
             } else if let initialValue = initialValue {

@@ -14,7 +14,7 @@ class FMStreamable_Tests: XCTestCase {
         let value: String
     }
     
-    let service = FMService(directory: FMDirectory(directory: .cachesDirectory), folderName: "fmstreamabletests")
+    let service = FMService(directory: FMDirectory(directory: .cachesDirectory), folderName: "FMStreamableTest")
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

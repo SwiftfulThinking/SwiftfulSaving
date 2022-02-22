@@ -12,7 +12,7 @@ import XCTest
 
 class UDStreamable_Tests: XCTestCase {
     
-    let service = UDService(suiteName: "testsuite")
+    let service = UDService(suiteName: "UDTestSuite")
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
