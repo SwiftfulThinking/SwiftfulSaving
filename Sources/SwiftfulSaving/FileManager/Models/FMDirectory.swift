@@ -15,7 +15,7 @@ public struct FMDirectory: Hashable {
     let directory: FileManager.SearchPathDirectory
     let limit: Int
 
-    init(directory: FileManager.SearchPathDirectory, limitInMB: Double? = nil) {
+    public init(directory: FileManager.SearchPathDirectory, limitInMB: Double? = nil) {
         self.directory = directory
         self.limit = max(0, Int(limitInMB?.convertingMBToBytes ?? 0))
     }
