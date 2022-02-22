@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  UDService.swift
+//  UDService
 //
 //  Created by Nick Sarno on 2/21/22.
 //
@@ -17,13 +17,15 @@ final public actor UDService {
         self.name = suiteName ?? "Standard"
     }
         
-    internal func value(forKey key: String) -> Any? {
+    public func value(forKey key: String) -> Any? {
         let value = suite.value(forKey: key)
-        log(action: .read, key: key, error: nil)
+        defer {
+            log(action: .read, key: key, error: nil)
+        }
         return value
     }
     
-    internal func set(_ value: Any?, forKey key: String) {
+    public func set(_ value: Any?, forKey key: String) {
         suite.set(value, forKey: key)
         log(action: .write, key: key, error: nil)
     }
@@ -35,7 +37,7 @@ extension UDService {
         
     private func log(action: SwiftfulSaving.ServiceAction, key: String, error: Error? = nil) {
         Task {
-            await Logger.shared.log(action: action, at: .userDefaults, object: "|| Key: \(key) || SuiteName: \(name)")
+            await Logger.shared.log(action: action, at: .userDefaults, object: "|| SuiteName: \(name) || Key: \(key)")
         }
     }
     
