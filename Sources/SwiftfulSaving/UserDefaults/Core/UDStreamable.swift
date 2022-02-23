@@ -75,7 +75,7 @@ import Combine
             }
             
             // If newValue != nil, save file
-            await service.save(item: newValue, key: key)
+            await service.save(object: newValue, key: key)
         }
     }
             

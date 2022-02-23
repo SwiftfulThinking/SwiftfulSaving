@@ -25,6 +25,16 @@ public struct CDContainer: Hashable {
         }
     }
     
+    /// FOR UNIT TESTS ONLY
+//    public init<T:AnyObject>(name: String, modelName: String, modelType: T.Type) {
+//        container = NSPersistentContainer(name: name, managedObjectModel: managedObjectModel)
+//        container.loadPersistentStores { (description, error) in
+//            if let error = error {
+//                print("FATALITY: ERROR LOADING CORE DATA. \(error)")
+//            }
+//        }
+//    }
+    
     // Hashable
     // If two structs are the same Container
     public func hash(into hasher: inout Hasher) {

@@ -6,6 +6,18 @@
 //
 import XCTest
 @testable import SwiftfulSaving
+import CoreData
+
+// FIXME: CD TESTS ARE CURRENTLY FAILING
+// Below tests succeed in a test project, but not within this framework.
+// The ItemContainer is not part of the regular Bundle and must be loaded in a special way.
+// 1. Change ItemContainer -> CDItemContainer
+// 2. Change ItemEntity -> CDItemEntity
+// 3. Change Item -> CDItem
+// 4. Figure out how to initialize CoreData container for below tests:
+// https://stackoverflow.com/questions/65137756/nspersistentcontainer-will-load-in-app-wont-load-in-test-target
+// https://stackoverflow.com/questions/50004553/get-all-urls-for-resources-in-sub-directory-in-swift
+// https://developer.apple.com/documentation/coredata/setting_up_a_core_data_stack/setting_up_a_core_data_stack_manually
 
 class CDStreamable_Tests: XCTestCase {
 
@@ -28,7 +40,7 @@ class CDStreamable_Tests: XCTestCase {
         
     }
     
-    let service = CDService(container: CDContainer(name: "ItemContainer"), contextName: "cdstest", cacheLimitInMB: nil)
+    let service = CDService(container: CDContainer(name: "ItemContainer"), contextName: "CoreDataTest", cacheLimitInMB: nil)
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
