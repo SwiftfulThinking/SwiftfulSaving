@@ -28,7 +28,7 @@ enum FMError: LocalizedError {
     
     var errorDescription: String {
         switch self {
-        case .objectNotFoundInCache: return "Fail to retrieve object from NSCache"
+        case .objectNotFoundInCache: return "Fail to retrieve object from NSCache."
         case .fileNotFound: return "Fail to retrieve file from URL."
         case .directoryNotFound: return "Fail to retrieve directory from URL."
         case .invalidURL: return "Fail to create URL for path."

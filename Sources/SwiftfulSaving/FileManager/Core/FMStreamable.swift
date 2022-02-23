@@ -62,19 +62,19 @@ import SwiftUI
             
     /// If newValue is provided, save object to FileManager. If newValue is nil, delete the file if it exists. Publish result to currentValue publisher.
     private func setObject(newValue: Value?) {
+        // Publish value first, for UI & data race issues
+        // Then persist to FileManager
+        currentValue.send(newValue)
+
         Task {
             guard let newValue = newValue else {
                 // If newValue == nil, then delete file
-                if let _ = try? await service.delete(key: key, ext: Value.fileExtension) {
-                    currentValue.send(nil)
-                }
+                try await service.delete(key: key, ext: Value.fileExtension)
                 return
             }
             
             // If newValue != nil, save file
-            if let _ = try? await service.save(item: newValue, key: key) {
-                currentValue.send(newValue)
-            }
+            try await service.save(item: newValue, key: key)
         }
     }
     

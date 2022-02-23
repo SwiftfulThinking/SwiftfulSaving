@@ -44,8 +44,8 @@ import Combine
     ///  - Warning: THIS SHOULD ONLY BE CALLED ONCE, FROM THE INIT.
     private func getObject(initialValue: Value? = nil) {
         Task {
-            let savedValue: Value? = await service.value(forKey: key) as? Value
-            
+            let savedValue: Value? = try? await service.object(key: key)
+
             // Ensure user wrappedValue wasn't set between init and now
             // Would only happen if wrappedValue is set immediately after init
             guard wrappedValue == initialValue else { return }
@@ -68,7 +68,14 @@ import Combine
         currentValue.send(newValue)
 
         Task {
-            await service.set(newValue, forKey: key)
+            guard let newValue = newValue else {
+                // If newValue == nil, then delete file
+                await service.delete(key: key)
+                return
+            }
+            
+            // If newValue != nil, save file
+            await service.save(item: newValue, key: key)
         }
     }
             

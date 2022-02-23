@@ -17,17 +17,30 @@ final public actor UDService {
         self.name = suiteName ?? "Standard"
     }
         
-    public func value(forKey key: String) -> Any? {
-        let value = suite.value(forKey: key)
+    public func object<T:UDSerializable>(key: String) throws -> T {
+        guard let object = suite.value(forKey: key) else {
+            throw UDError.objectNotFound
+        }
+        
+        guard let object = object as? T else {
+            throw UDError.invalidDataType
+        }
+
         defer {
             log(action: .read, key: key, error: nil)
         }
-        return value
+        
+        return object
     }
     
-    public func set(_ value: Any?, forKey key: String) {
-        suite.set(value, forKey: key)
+    public func save<T:UDSerializable>(item: T, key: String) {
+        suite.set(item, forKey: key)
         log(action: .write, key: key, error: nil)
+    }
+    
+    public func delete(key: String) {
+        suite.set(nil, forKey: key)
+        log(action: .delete, key: key, error: nil)
     }
     
 }
