@@ -23,7 +23,7 @@ final public actor CDService {
     internal var cacheReads: Int = 0
     internal var cacheWrites: Int = 0
 
-    init(container: CDContainer, contextName: String, cacheLimitInMB: Double? = nil) {
+    public init(container: CDContainer, contextName: String, cacheLimitInMB: Double? = nil) {
         let newContext = CDContext(container: container, contextName: contextName)
         self.context = newContext
         self.cache = CDCache(limitInMB: cacheLimitInMB)
@@ -38,7 +38,7 @@ final public actor CDService {
     }
 
     // Convert to T.Entity here and pass that protocol to next function
-    func object<T:CoreDataTransformable>(key: String) throws -> T {
+    public func object<T:CoreDataTransformable>(key: String) throws -> T {
                         
         // Check NSCache
         do {
@@ -65,7 +65,7 @@ final public actor CDService {
         }
     }
     
-    func allObjects<T:CoreDataTransformable>() throws -> [T] {
+    public func allObjects<T:CoreDataTransformable>() throws -> [T] {
         // Check CoreData
         let key = "N/A - All Objects"
         do {
