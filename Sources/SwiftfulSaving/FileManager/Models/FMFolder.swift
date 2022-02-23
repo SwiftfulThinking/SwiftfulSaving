@@ -75,20 +75,20 @@ extension FMFolder {
 extension FMFolder {
         
     /// Save DataTransformable object to File and manage folder size if needed
-    func save<T:DataTransformable>(item: T, key: String) throws -> URL {
+    func save<T:DataTransformable>(object: T, key: String) throws -> URL {
         do {
             // Prepare folder and directory by clearing room to fit new file as needed
-            try manageFolderAndDirectorySize(item: item)
+            try manageFolderAndDirectorySize(object: object)
             
             // Write to folder
-            return try writeToDisk(item: item, key: key)
+            return try writeToDisk(item: object, key: key)
         } catch {
             throw error
         }
     }
     
-    private func manageFolderAndDirectorySize<T:DataTransformable>(item: T) throws {
-        guard let sizeRequested = item.toData()?.bytes else { throw FMError.noData }
+    private func manageFolderAndDirectorySize<T:DataTransformable>(object: T) throws {
+        guard let sizeRequested = object.toData()?.bytes else { throw FMError.noData }
         
         do {
             // manage folder size
