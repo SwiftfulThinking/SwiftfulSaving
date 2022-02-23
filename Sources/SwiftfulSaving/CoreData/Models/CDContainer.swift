@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct CDContainer: Hashable {
+public struct CDContainer: Hashable {
 
     private let container: NSPersistentContainer
     
@@ -16,7 +16,7 @@ struct CDContainer: Hashable {
         container.name
     }
 
-    init(name: String) {
+    public init(name: String) {
         container = NSPersistentContainer(name: name)
         container.loadPersistentStores { (description, error) in
             if let error = error {
