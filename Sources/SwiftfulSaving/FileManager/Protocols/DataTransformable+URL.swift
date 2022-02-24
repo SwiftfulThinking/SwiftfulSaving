@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: URL
 
-extension URL {
+public extension URL {
     
     typealias MP3 = UrlMP3
     typealias MP4 = UrlMP4
@@ -18,7 +18,7 @@ extension URL {
 
 // MARK: CONVENIENCE
 
-extension URL {
+public extension URL {
     
     func mp3() -> UrlMP3 {
         UrlMP3(url: self)
@@ -32,43 +32,43 @@ extension URL {
 
 // MARK: UrlMP4
 
-struct UrlMP4 {
+public struct UrlMP4 {
     let url: URL
 }
 
 extension UrlMP4: DataTransformable {
 
-    static var fileExtension: FMFileExtension {
+    public static var fileExtension: FMFileExtension {
         .mp4
     }
 
-    func toData() -> Data? {
+    public func toData() -> Data? {
         try? Data(contentsOf: url)
     }
 
     
-    init?(data: Data) {
+    public init?(data: Data) {
         guard let url = URL(dataRepresentation: data, relativeTo: nil) else { return nil }
         self.url = url
     }
 
 }
 
-struct UrlMP3 {
+public struct UrlMP3 {
     let url: URL
 }
 
 extension UrlMP3: DataTransformable {
 
-    static var fileExtension: FMFileExtension {
+    public static var fileExtension: FMFileExtension {
         .mp4
     }
 
-    func toData() -> Data? {
+    public func toData() -> Data? {
         try? Data(contentsOf: url)
     }
 
-    init?(data: Data) {
+    public init?(data: Data) {
         guard let url = URL(dataRepresentation: data, relativeTo: nil) else { return nil }
         self.url = url
     }

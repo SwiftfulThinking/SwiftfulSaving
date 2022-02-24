@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: ENCODABLE
 
-extension Encodable {
+public extension Encodable {
     
     static var jsonEncoder: JSONEncoder {
         JSONEncoder()
@@ -25,7 +25,7 @@ extension Encodable {
 
 // MARK: DECODABLE
 
-extension Decodable {
+public extension Decodable {
         
     static var jsonDecoder: JSONDecoder {
         JSONDecoder()
@@ -51,6 +51,7 @@ extension Array: DataTransformable where Element : Codable {
     public func toData() -> Data? {
         try? Self.jsonEncoder.encode(self)
     }
+    
     static var jsonDecoder: JSONDecoder {
         JSONDecoder()
     }

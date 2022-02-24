@@ -10,14 +10,14 @@ import UIKit
 
 // MARK: UIImage
 
-extension UIImage {
+public extension UIImage {
     typealias PNG = ImagePNG
     typealias JPG = ImageJPG
 }
 
 // MARK: CONVENIENCE
 
-extension UIImage {
+public extension UIImage {
     
     func jpg(compression: CGFloat? = nil) -> ImageJPG {
         ImageJPG(image: self, compression: compression)
@@ -49,7 +49,7 @@ extension UIImage {
 
 // MARK: ImageJPG
 
-struct ImageJPG {
+public struct ImageJPG {
     let image: UIImage
     let compression: CGFloat?
     
@@ -61,19 +61,14 @@ struct ImageJPG {
 
 extension ImageJPG: DataTransformable {
 
-    static let fileExtension: FMFileExtension = .jpg
+    public static let fileExtension: FMFileExtension = .jpg
 
     
-    func toData() -> Data? {
+    public func toData() -> Data? {
         image.jpegData(compressionQuality: compression ?? 1.0)
     }
-
-    static func fromData(data: Data) -> Self? {
-        guard let image = UIImage(data: data) else { return nil }
-        return self.init(image: image)
-    }
     
-    init?(data: Data) {
+    public init?(data: Data) {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
         self.compression = nil
@@ -84,19 +79,19 @@ extension ImageJPG: DataTransformable {
 
 // MARK: ImagePNG
 
-struct ImagePNG {
+public struct ImagePNG {
     let image: UIImage
 }
 
 extension ImagePNG: DataTransformable {
 
-    static let fileExtension: FMFileExtension = .png
+    public static let fileExtension: FMFileExtension = .png
 
-    func toData() -> Data? {
+    public func toData() -> Data? {
         image.pngData()
     }
     
-    init?(data: Data) {
+    public init?(data: Data) {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
     }
