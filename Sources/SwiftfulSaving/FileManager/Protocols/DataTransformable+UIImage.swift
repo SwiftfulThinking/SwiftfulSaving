@@ -10,14 +10,14 @@ import UIKit
 
 // MARK: UIImage
 
-extension UIImage {
+public extension UIImage {
     typealias PNG = ImagePNG
     typealias JPG = ImageJPG
 }
 
 // MARK: CONVENIENCE
 
-extension UIImage {
+public extension UIImage {
     
     func jpg(compression: CGFloat? = nil) -> ImageJPG {
         ImageJPG(image: self, compression: compression)
@@ -30,25 +30,27 @@ extension UIImage {
 }
 
 // MARK: DataTransformable
+// Note: Removing default implementation of UIImage conforming to DataTransformable
+// This will make developers decide between their own strategy, or using UIImage.PNG or UIImage.JPG
 
-extension UIImage: DataTransformable {
-    
-    public func toData() -> Data? {
-        self.jpegData(compressionQuality: 1)
-    }
-
-    public static let fileExtension: FMFileExtension = .jpg
-
-    public static func fromData(data: Data) -> Self? {
-        Self.init(data: data)
-    }
-    
-}
+//extension UIImage: DataTransformable {
+//
+//    public func toData() -> Data? {
+//        self.jpegData(compressionQuality: 1)
+//    }
+//
+//    public static let fileExtension: FMFileExtension = .jpg
+//
+//    public static func fromData(data: Data) -> Self? {
+//        Self.init(data: data)
+//    }
+//
+//}
 
 // MARK: ImageJPG
 
-struct ImageJPG {
-    let image: UIImage
+public struct ImageJPG {
+    public let image: UIImage
     let compression: CGFloat?
     
     init(image: UIImage, compression: CGFloat? = nil) {
@@ -59,19 +61,14 @@ struct ImageJPG {
 
 extension ImageJPG: DataTransformable {
 
-    static let fileExtension: FMFileExtension = .jpg
+    public static let fileExtension: FMFileExtension = .jpg
 
     
-    func toData() -> Data? {
+    public func toData() -> Data? {
         image.jpegData(compressionQuality: compression ?? 1.0)
     }
-
-    static func fromData(data: Data) -> Self? {
-        guard let image = UIImage(data: data) else { return nil }
-        return self.init(image: image)
-    }
     
-    init?(data: Data) {
+    public init?(data: Data) {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
         self.compression = nil
@@ -82,19 +79,19 @@ extension ImageJPG: DataTransformable {
 
 // MARK: ImagePNG
 
-struct ImagePNG {
-    let image: UIImage
+public struct ImagePNG {
+    public let image: UIImage
 }
 
 extension ImagePNG: DataTransformable {
 
-    static let fileExtension: FMFileExtension = .png
+    public static let fileExtension: FMFileExtension = .png
 
-    func toData() -> Data? {
+    public func toData() -> Data? {
         image.pngData()
     }
     
-    init?(data: Data) {
+    public init?(data: Data) {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
     }

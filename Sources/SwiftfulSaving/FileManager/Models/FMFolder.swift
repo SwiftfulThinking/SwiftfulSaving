@@ -57,7 +57,9 @@ extension FMFolder {
        
     /// URL for File in Folder within Directory
     private func fileURL(key: String, fileExtension ext: FMFileExtension) throws -> URL {
-        let key = key.lowercasedWithoutSpacesOrPunctuation()
+        // Note: Originally included for developer convenience.
+        // However, removes ability for developers to fully control file name
+//        let key = key.lowercasedWithoutSpacesOrPunctuation()
         
         do {
             var url = try url()
