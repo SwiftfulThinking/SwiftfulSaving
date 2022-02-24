@@ -30,20 +30,22 @@ extension UIImage {
 }
 
 // MARK: DataTransformable
+// Note: Removing default implementation of UIImage conforming to DataTransformable
+// This will make developers decide between their own strategy, or using UIImage.PNG or UIImage.JPG
 
-extension UIImage: DataTransformable {
-    
-    public func toData() -> Data? {
-        self.jpegData(compressionQuality: 1)
-    }
-
-    public static let fileExtension: FMFileExtension = .jpg
-
-    public static func fromData(data: Data) -> Self? {
-        Self.init(data: data)
-    }
-    
-}
+//extension UIImage: DataTransformable {
+//
+//    public func toData() -> Data? {
+//        self.jpegData(compressionQuality: 1)
+//    }
+//
+//    public static let fileExtension: FMFileExtension = .jpg
+//
+//    public static func fromData(data: Data) -> Self? {
+//        Self.init(data: data)
+//    }
+//
+//}
 
 // MARK: ImageJPG
 

@@ -32,7 +32,7 @@ class FMService_Tests: XCTestCase {
             let key: String = .randomString()
 
             // When
-            let object: UIImage? = try? await service?.object(key: key)
+            let object: UIImage.JPG? = try? await service?.object(key: key)
             
             // Then
             print(key)
@@ -47,13 +47,13 @@ class FMService_Tests: XCTestCase {
             let key: String = .randomString()
 
             // When
-            guard let image = UIImage.random() else {
+            guard let image = UIImage.random()?.jpg(compression: nil) else {
                 XCTFail()
                 return
             }
             
             let url = try? await service?.save(object: image, key: key)
-            let object: UIImage? = try? await service?.object(key: key)
+            let object: UIImage.JPG? = try? await service?.object(key: key)
             
             // Then
             XCTAssertNotNil(url)
@@ -68,7 +68,7 @@ class FMService_Tests: XCTestCase {
             let key: String = .randomString()
 
             // When
-            guard let image = UIImage.random() else {
+            guard let image = UIImage.random()?.jpg(compression: nil) else {
                 XCTFail()
                 return
             }
@@ -88,7 +88,7 @@ class FMService_Tests: XCTestCase {
             let key: String = .randomString()
 
             // When
-            guard let image = UIImage.random() else {
+            guard let image = UIImage.random()?.jpg(compression: nil) else {
                 XCTFail()
                 return
             }
@@ -97,7 +97,7 @@ class FMService_Tests: XCTestCase {
             
             // Then
             do {
-                try await service?.delete(key: key, ext: UIImage.fileExtension)
+                try await service?.delete(key: key, ext: UIImage.JPG.fileExtension)
             } catch {
                 XCTFail()
             }
@@ -120,11 +120,11 @@ class FMService_Tests: XCTestCase {
         let initLimits = await service.directoryUsage()
         XCTAssertEqual(initLimits.limit, limit?.convertingMBToBytes)
         
-        guard let image = UIImage.random(size: CGSize(width: 800, height: 800)) else {
+        guard let image = UIImage.random(size: CGSize(width: 800, height: 800))?.jpg(compression: nil) else {
             XCTFail()
             return
         }
-        let data = image.jpegData(compressionQuality: 1)?.bytes ?? 0
+        let data = image.toData()?.bytes ?? 0
         
         let loopCount = 100
         for _ in 0..<loopCount {
@@ -148,12 +148,12 @@ class FMService_Tests: XCTestCase {
         let initLimits = await service.folderUsage()
         XCTAssertEqual(initLimits.limit, limit?.convertingMBToBytes)
         
-        guard let image = UIImage.random(size: CGSize(width: 800, height: 800)) else {
+        guard let image = UIImage.random(size: CGSize(width: 800, height: 800))?.jpg(compression: nil) else {
             XCTFail()
             return
         }
-        let data = image.jpegData(compressionQuality: 1)?.bytes ?? 0
-        
+        let data = image.toData()?.bytes ?? 0
+
         let loopCount = 100
         for _ in 0..<loopCount {
             let key: String = .randomString()
@@ -179,12 +179,12 @@ class FMService_Tests: XCTestCase {
         let initDirectoryLimits = await service.directoryUsage()
         XCTAssertEqual(initDirectoryLimits.limit, limitDirectory?.convertingMBToBytes)
 
-        guard let image = UIImage.random(size: CGSize(width: 800, height: 800)) else {
+        guard let image = UIImage.random(size: CGSize(width: 800, height: 800))?.jpg(compression: nil) else {
             XCTFail()
             return
         }
-        let data = image.jpegData(compressionQuality: 1)?.bytes ?? 0
-        
+        let data = image.toData()?.bytes ?? 0
+
         let loopCount = 100
         for _ in 0..<loopCount {
             let key: String = .randomString()
