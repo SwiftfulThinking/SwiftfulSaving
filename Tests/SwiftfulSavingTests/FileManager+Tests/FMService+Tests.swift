@@ -52,7 +52,7 @@ class FMService_Tests: XCTestCase {
                 return
             }
             
-            let url = try? await service?.save(item: image, key: key)
+            let url = try? await service?.save(object: image, key: key)
             let object: UIImage? = try? await service?.object(key: key)
             
             // Then
@@ -73,7 +73,7 @@ class FMService_Tests: XCTestCase {
                 return
             }
             
-            let url = try? await service?.save(item: image, key: key)
+            let url = try? await service?.save(object: image, key: key)
             
             // Then
             XCTAssertNotNil(url)
@@ -93,7 +93,7 @@ class FMService_Tests: XCTestCase {
                 return
             }
             
-            let _ = try? await service?.save(item: image, key: key)
+            let _ = try? await service?.save(object: image, key: key)
             
             // Then
             do {
@@ -129,7 +129,7 @@ class FMService_Tests: XCTestCase {
         let loopCount = 100
         for _ in 0..<loopCount {
             let key: String = .randomString()
-            let _ = try? await service.save(item: image, key: key)
+            let _ = try? await service.save(object: image, key: key)
         }
         
         let dirLimits = await service.directoryUsage()
@@ -157,7 +157,7 @@ class FMService_Tests: XCTestCase {
         let loopCount = 100
         for _ in 0..<loopCount {
             let key: String = .randomString()
-            let _ = try? await service.save(item: image, key: key)
+            let _ = try? await service.save(object: image, key: key)
         }
         
         let folderLimits = await service.folderUsage()
@@ -188,7 +188,7 @@ class FMService_Tests: XCTestCase {
         let loopCount = 100
         for _ in 0..<loopCount {
             let key: String = .randomString()
-            let _ = try? await service.save(item: image, key: key)
+            let _ = try? await service.save(object: image, key: key)
         }
         
         let accuracy = 300000  // 0.3 mb

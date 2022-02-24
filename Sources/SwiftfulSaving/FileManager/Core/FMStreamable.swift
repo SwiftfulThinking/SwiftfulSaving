@@ -74,7 +74,7 @@ import SwiftUI
             }
             
             // If newValue != nil, save file
-            try await service.save(item: newValue, key: key)
+            try await service.save(object: newValue, key: key)
         }
     }
     

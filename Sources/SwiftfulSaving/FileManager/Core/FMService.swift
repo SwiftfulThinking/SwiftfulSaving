@@ -76,14 +76,14 @@ final public actor FMService {
     // MARK: WRITE
     
     /// Save DataTransformable object to File and manage folder size if needed
-    @discardableResult public func save<T:DataTransformable>(item: T, key: String) throws -> URL {
+    @discardableResult public func save<T:DataTransformable>(object: T, key: String) throws -> URL {
         do {
             // Add to FileManager
-            let url = try folder.save(item: item, key: key)
+            let url = try folder.save(object: object, key: key)
             
             // Add to NSCache
             Task {
-                saveToCache(object: item, key: key)
+                saveToCache(object: object, key: key)
             }
             
             folderWrites += 1

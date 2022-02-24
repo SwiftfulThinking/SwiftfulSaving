@@ -33,8 +33,8 @@ final public actor UDService {
         return object
     }
     
-    public func save<T:UDSerializable>(item: T, key: String) {
-        suite.set(item, forKey: key)
+    public func save<T:UDSerializable>(object: T, key: String) {
+        suite.set(object, forKey: key)
         log(action: .write, key: key, error: nil)
     }
     
