@@ -50,7 +50,7 @@ public extension UIImage {
 // MARK: ImageJPG
 
 public struct ImageJPG {
-    let image: UIImage
+    public let image: UIImage
     let compression: CGFloat?
     
     init(image: UIImage, compression: CGFloat? = nil) {
@@ -80,7 +80,7 @@ extension ImageJPG: DataTransformable {
 // MARK: ImagePNG
 
 public struct ImagePNG {
-    let image: UIImage
+    public let image: UIImage
 }
 
 extension ImagePNG: DataTransformable {

@@ -33,7 +33,7 @@ public extension URL {
 // MARK: UrlMP4
 
 public struct UrlMP4 {
-    let url: URL
+    public let url: URL
 }
 
 extension UrlMP4: DataTransformable {
@@ -55,7 +55,7 @@ extension UrlMP4: DataTransformable {
 }
 
 public struct UrlMP3 {
-    let url: URL
+    public let url: URL
 }
 
 extension UrlMP3: DataTransformable {
