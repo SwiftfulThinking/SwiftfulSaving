@@ -82,7 +82,8 @@ struct CDContext: Hashable {
             throw error
         }
     }
-
+    // ERROR
+    // PRINTS
     func save<T:CoreDataTransformable>(object: T, key: String) throws -> T {
         do {
             // Create new Entity within Context if needed
@@ -99,7 +100,7 @@ struct CDContext: Hashable {
             
             // Convert Entity back to object, with the updated Entity included
             guard let updatedObject = T(from: entity) else {
-                throw URLError(.badURL)
+                throw CDError.failedToConvertToObject
             }
             return updatedObject
         } catch {
