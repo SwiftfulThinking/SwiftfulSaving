@@ -55,9 +55,9 @@ final public actor CDService {
             let object: T = try context.object(key: key)
             contextReads += 1
             log(action: .read, at: .coreData, key: key)
-            Task {
-                saveToCache(object: object, key: key)
-            }
+//            Task {
+//                saveToCache(object: object, key: key)
+//            }
             return object
         } catch {
             log(action: .notFound, at: .coreData, key: key)
