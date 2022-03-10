@@ -26,7 +26,7 @@ enum FMError: LocalizedError {
     // File larger than cache's max limit
     case fileTooLarge(maximumLimit: Int, sizeRequested: Int)
     
-    var errorDescription: String {
+    public var errorDescription: String {
         switch self {
         case .objectNotFoundInCache: return "Fail to retrieve object from NSCache."
         case .fileNotFound: return "Fail to retrieve file from URL."
