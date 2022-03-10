@@ -37,7 +37,7 @@ extension FMDirectory {
     
     /// URL for Directory
     func url() throws -> URL {
-        guard var url = manager.urls(for: .cachesDirectory, in: .userDomainMask).first else { throw FMError.invalidURL }
+        guard var url = manager.urls(for: directory, in: .userDomainMask).first else { throw FMError.invalidURL }
         url.appendPathComponent("FMFolders")
         return url
     }
