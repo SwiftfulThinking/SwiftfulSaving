@@ -31,7 +31,7 @@ public extension Decodable {
         JSONDecoder()
     }
 
-    init?(data: Data) {
+    init?(data: Data, url: URL?) {
         guard let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
         self = object
     }
@@ -59,7 +59,7 @@ extension Array: DataTransformable where Element : Codable {
         JSONDecoder()
     }
 
-    public init?(data: Data) {
+    public init?(data: Data, url: URL?) {
         guard let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
         self = object
     }

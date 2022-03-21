@@ -68,7 +68,7 @@ extension ImageJPG: DataTransformable {
         image.jpegData(compressionQuality: compression ?? 1.0)
     }
     
-    public init?(data: Data) {
+    public init?(data: Data, url: URL?) {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
         self.compression = nil
@@ -91,7 +91,7 @@ extension ImagePNG: DataTransformable {
         image.pngData()
     }
     
-    public init?(data: Data) {
+    public init?(data: Data, url: URL?) {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
     }

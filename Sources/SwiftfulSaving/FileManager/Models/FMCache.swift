@@ -24,7 +24,7 @@ struct FMCache {
             throw FMError.objectNotFoundInCache
         }
 
-        guard let object = T(data: data as Data) else {
+        guard let object = T(data: data as Data, url: nil) else {
             throw FMError.noData
         }
 

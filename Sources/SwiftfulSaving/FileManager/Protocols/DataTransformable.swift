@@ -16,7 +16,7 @@ public protocol DataTransformable {
     static var fileExtension: FMFileExtension { get }
     
     /// Initialize object from Data
-    init?(data: Data)
+    init?(data: Data, url: URL?)
     
     /// Determines if object can be stored in NSCache
     static var canBeCached: Bool { get }
