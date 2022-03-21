@@ -48,14 +48,16 @@ final public actor FMService {
     /// Get DataTransformable object from File
     public func object<T:DataTransformable>(key: String) throws -> T {
         
-        // Check NSCache
-        do {
-            let object: T = try cache.object(key: key)
-            cacheReads += 1
-            log(action: .read, at: .nsCache, key: key)
-            return object
-        } catch {
-            log(action: .notFound, at: .nsCache, key: key)
+        if T.canBeCached {
+            // Check NSCache
+            do {
+                let object: T = try cache.object(key: key)
+                cacheReads += 1
+                log(action: .read, at: .nsCache, key: key)
+                return object
+            } catch {
+                log(action: .notFound, at: .nsCache, key: key)
+            }
         }
         
         // Check FileManager
@@ -63,9 +65,14 @@ final public actor FMService {
             let object: T = try folder.getFile(key: key)
             folderReads += 1
             log(action: .read, at: .fileManager, key: key)
-            Task {
-                saveToCache(object: object, key: key)
+            
+            if T.canBeCached {
+                // Save to cache
+                Task {
+                    saveToCache(object: object, key: key)
+                }
             }
+            
             return object
         } catch {
             log(action: .notFound, at: .fileManager, key: key)
@@ -81,9 +88,11 @@ final public actor FMService {
             // Add to FileManager
             let url = try folder.save(object: object, key: key)
             
-            // Add to NSCache
-            Task {
-                saveToCache(object: object, key: key)
+            if T.canBeCached {
+                // Add to NSCache
+                Task {
+                    saveToCache(object: object, key: key)
+                }
             }
             
             folderWrites += 1

@@ -9,13 +9,16 @@ import Foundation
 
 public protocol DataTransformable {
     
-    // Convert object to Data
+    /// Convert object to Data
     func toData() -> Data?
     
-    // File extension for URL
+    /// File extension for URL
     static var fileExtension: FMFileExtension { get }
     
-    // Initialize object from Data
+    /// Initialize object from Data
     init?(data: Data)
+    
+    /// Determines if object can be stored in NSCache
+    static var canBeCached: Bool { get }
 }
 

@@ -74,7 +74,7 @@ extension ImageJPG: DataTransformable {
         self.compression = nil
     }
 
-
+    public static let canBeCached: Bool = true
 }
 
 // MARK: ImagePNG
@@ -95,5 +95,6 @@ extension ImagePNG: DataTransformable {
         guard let image = UIImage(data: data) else { return nil }
         self.image = image
     }
-
+    
+    public static let canBeCached: Bool = true
 }

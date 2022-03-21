@@ -37,7 +37,7 @@ public struct UrlMP4 {
 }
 
 extension UrlMP4: DataTransformable {
-
+    
     public static var fileExtension: FMFileExtension {
         .mp4
     }
@@ -51,6 +51,8 @@ extension UrlMP4: DataTransformable {
         guard let url = URL(dataRepresentation: data, relativeTo: nil) else { return nil }
         self.url = url
     }
+
+    public static let canBeCached: Bool = false
 
 }
 
@@ -73,4 +75,5 @@ extension UrlMP3: DataTransformable {
         self.url = url
     }
 
+    public static let canBeCached: Bool = false
 }

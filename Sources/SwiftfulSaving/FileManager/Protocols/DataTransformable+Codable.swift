@@ -36,6 +36,9 @@ public extension Decodable {
         self = object
     }
 
+    static var canBeCached: Bool {
+        true
+    }
 }
 
 // MARK: CODABLE ARRAY
@@ -61,4 +64,7 @@ extension Array: DataTransformable where Element : Codable {
         self = object
     }
 
+    public static var canBeCached: Bool {
+        true
+    }
 }
