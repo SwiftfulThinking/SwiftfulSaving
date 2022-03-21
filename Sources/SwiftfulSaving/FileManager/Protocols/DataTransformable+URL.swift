@@ -63,7 +63,7 @@ public struct UrlMP3 {
 extension UrlMP3: DataTransformable {
 
     public static var fileExtension: FMFileExtension {
-        .mp4
+        .mp3
     }
 
     public func toData() -> Data? {
