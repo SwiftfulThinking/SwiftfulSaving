@@ -46,7 +46,7 @@ final public actor FMService {
     // MARK: READ
         
     /// Get DataTransformable object from File
-    public func object<T:DataTransformable>(key: String) throws -> T {
+    public func object<T:URLTransformable>(key: String) throws -> T {
         
         if T.canBeCached {
             // Check NSCache
@@ -83,7 +83,7 @@ final public actor FMService {
     // MARK: WRITE
     
     /// Save DataTransformable object to File and manage folder size if needed
-    @discardableResult public func save<T:DataTransformable>(object: T, key: String) throws -> URL {
+    @discardableResult public func save<T:URLTransformable>(object: T, key: String) throws -> URL {
         do {
             // Add to FileManager
             let url = try folder.save(object: object, key: key)
@@ -104,7 +104,7 @@ final public actor FMService {
         }
     }
     
-    private func saveToCache<T:DataTransformable>(object: T, key: String) {
+    private func saveToCache<T:URLTransformable>(object: T, key: String) {
         do {
             try cache.save(object, key: key)
             cacheWrites += 1

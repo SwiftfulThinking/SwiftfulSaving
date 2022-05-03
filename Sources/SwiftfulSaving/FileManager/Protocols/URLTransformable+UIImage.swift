@@ -1,5 +1,5 @@
 //
-//  DataTransformable+UIImage.swift
+//  URLTransformable+UIImage.swift
 //  SwiftfulSaving
 //
 //  Created by Nick Sarno on 12/19/21.
@@ -59,7 +59,7 @@ public struct ImageJPG {
     }
 }
 
-extension ImageJPG: DataTransformable {
+extension ImageJPG: URLTransformable {
 
     public static let fileExtension: FMFileExtension = .jpg
 
@@ -68,8 +68,8 @@ extension ImageJPG: DataTransformable {
         image.jpegData(compressionQuality: compression ?? 1.0)
     }
     
-    public init?(data: Data, url: URL?) {
-        guard let image = UIImage(data: data) else { return nil }
+    public init?(url: URL) {
+        guard let image = UIImage(contentsOfFile: url.path) else { return nil }
         self.image = image
         self.compression = nil
     }
@@ -83,7 +83,7 @@ public struct ImagePNG {
     public let image: UIImage
 }
 
-extension ImagePNG: DataTransformable {
+extension ImagePNG: URLTransformable {
 
     public static let fileExtension: FMFileExtension = .png
 
@@ -91,8 +91,8 @@ extension ImagePNG: DataTransformable {
         image.pngData()
     }
     
-    public init?(data: Data, url: URL?) {
-        guard let image = UIImage(data: data) else { return nil }
+    public init?(url: URL) {
+        guard let image = UIImage(contentsOfFile: url.path) else { return nil }
         self.image = image
     }
     

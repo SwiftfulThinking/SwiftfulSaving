@@ -1,5 +1,5 @@
 //
-//  DataTransformable+URL.swift
+//  URLTransformable+URL.swift
 //  SwiftfulSaving
 //
 //  Created by Nick Sarno on 12/19/21.
@@ -18,25 +18,22 @@ public extension URL {
 
 // MARK: CONVENIENCE
 
-public extension URL {
-    
-    func mp3() -> UrlMP3 {
-        UrlMP3(url: self)
-    }
-    
-    func mp4() -> UrlMP4 {
-        UrlMP4(url: self)
-    }
-    
-}
+//public extension URL {
+//    
+//    func mp3() -> UrlMP3 {
+//        UrlMP3(url: self)
+//    }
+//    
+//    func mp4() -> UrlMP4 {
+//        UrlMP4(url: self)
+//    }
+//    
+//}
 
 // MARK: UrlMP4
 
-public struct UrlMP4 {
+public struct UrlMP4: URLTransformable {
     public let url: URL
-}
-
-extension UrlMP4: DataTransformable {
     
     public static var fileExtension: FMFileExtension {
         .mp4
@@ -46,9 +43,7 @@ extension UrlMP4: DataTransformable {
         try? Data(contentsOf: url)
     }
 
-    
-    public init?(data: Data, url: URL?) {
-        guard let url = url ?? URL(dataRepresentation: data, relativeTo: nil) else { return nil }
+    public init?(url: URL) {
         self.url = url
     }
 
@@ -56,11 +51,8 @@ extension UrlMP4: DataTransformable {
 
 }
 
-public struct UrlMP3 {
+public struct UrlMP3: URLTransformable {
     public let url: URL
-}
-
-extension UrlMP3: DataTransformable {
 
     public static var fileExtension: FMFileExtension {
         .mp3
@@ -70,8 +62,7 @@ extension UrlMP3: DataTransformable {
         try? Data(contentsOf: url)
     }
 
-    public init?(data: Data, url: URL?) {
-        guard let url = url ?? URL(dataRepresentation: data, relativeTo: nil) else { return nil }
+    public init?(url: URL) {
         self.url = url
     }
 

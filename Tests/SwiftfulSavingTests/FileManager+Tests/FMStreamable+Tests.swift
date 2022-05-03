@@ -10,7 +10,7 @@ import XCTest
 
 class FMStreamable_Tests: XCTestCase {
 
-    struct MockModel: Codable, DataTransformable {
+    struct MockModel: Codable, URLTransformable {
         let value: String
     }
     

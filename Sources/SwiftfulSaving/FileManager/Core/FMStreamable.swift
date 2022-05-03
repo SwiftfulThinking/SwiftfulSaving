@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-@propertyWrapper public struct FMStreamable<Value : DataTransformable> : DynamicProperty {
+@propertyWrapper public struct FMStreamable<Value : URLTransformable> : DynamicProperty {
     
     private let currentValue: CurrentValueSubject<Value?, Never>
     private let key: String

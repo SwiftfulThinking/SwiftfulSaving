@@ -1,5 +1,5 @@
 //
-//  DataTransformable+Codable.swift
+//  URLTransformable+Codable.swift
 //  SwiftfulSaving
 //
 //  Created by Nick Sarno on 12/30/21.
@@ -31,8 +31,8 @@ public extension Decodable {
         JSONDecoder()
     }
 
-    init?(data: Data, url: URL?) {
-        guard let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
+    init?(url: URL) {
+        guard let data = try? Data(contentsOf: url), let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
         self = object
     }
 
@@ -43,7 +43,7 @@ public extension Decodable {
 
 // MARK: CODABLE ARRAY
 
-extension Array: DataTransformable where Element : Codable {
+extension Array: URLTransformable where Element : Codable {
     static var jsonEncoder: JSONEncoder {
         JSONEncoder()
     }
@@ -59,8 +59,8 @@ extension Array: DataTransformable where Element : Codable {
         JSONDecoder()
     }
 
-    public init?(data: Data, url: URL?) {
-        guard let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
+    public init?(url: URL) {
+        guard let data = try? Data(contentsOf: url), let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
         self = object
     }
 

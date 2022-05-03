@@ -77,7 +77,7 @@ extension FMFolder {
 extension FMFolder {
         
     /// Save DataTransformable object to File and manage folder size if needed
-    func save<T:DataTransformable>(object: T, key: String) throws -> URL {
+    func save<T:URLTransformable>(object: T, key: String) throws -> URL {
         do {
             // Prepare folder and directory by clearing room to fit new file as needed
             try manageFolderAndDirectorySize(object: object)
@@ -89,7 +89,7 @@ extension FMFolder {
         }
     }
     
-    private func manageFolderAndDirectorySize<T:DataTransformable>(object: T) throws {
+    private func manageFolderAndDirectorySize<T:URLTransformable>(object: T) throws {
         guard let sizeRequested = object.toData()?.bytes else { throw FMError.noData }
         
         do {
@@ -120,7 +120,7 @@ extension FMFolder {
     }
 
     /// Write DataTransformable to File
-    private func writeToDisk<T:DataTransformable>(item: T, key: String) throws -> URL {
+    private func writeToDisk<T:URLTransformable>(item: T, key: String) throws -> URL {
         // Convert file to data
         guard let data = item.toData() else { throw FMError.noData }
         
@@ -173,10 +173,10 @@ extension FMFolder {
 
 extension FMFolder {
     
-    func getFile<T:DataTransformable>(key: String) throws -> T {
+    func getFile<T:URLTransformable>(key: String) throws -> T {
         do {
             let (data, url) = try getFileData(key: key, fileExtension: T.fileExtension)
-            guard let object: T = T(data: data, url: url) else {
+            guard let object: T = T(url: url) else {
                 throw FMError.noData
             }
             return object
