@@ -19,20 +19,19 @@ struct FMCache {
         self.cache = cache
     }
 
-    func object<T:URLTransformable>(key: String) throws -> T {
+    func object<T:DataTransformable>(key: String) throws -> T {
         guard let data = cache.object(forKey: key as NSString) else {
             throw FMError.objectNotFoundInCache
         }
-        throw FMError.objectNotFoundInCache
 
-//        guard let object = T(data: data as Data, url: nil) else {
-//            throw FMError.noData
-//        }
-//
-//        return object
+        guard let object = T(data: data as Data) else {
+            throw FMError.noData
+        }
+
+        return object
     }
 
-    func save<T:URLTransformable>(_ object: T, key: String) throws {
+    func save<T:DataTransformable>(_ object: T, key: String) throws {
         guard let data = object.toData() else {
             throw FMError.noData
         }

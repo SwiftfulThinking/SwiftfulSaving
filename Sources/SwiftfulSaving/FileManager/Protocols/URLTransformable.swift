@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// An object that conforms to URLTransformable can be transformed to Data and initialized from a URL. This is used to save/read objects from the FileManager.
 public protocol URLTransformable {
     
     /// Convert object to Data
@@ -16,8 +17,5 @@ public protocol URLTransformable {
     static var fileExtension: FMFileExtension { get }
     
     /// Initialize object from URL
-    init?(url: URL)
-    
-    /// Determines if object can be stored in NSCache
-    static var canBeCached: Bool { get }
+    init?(url: URL)    
 }

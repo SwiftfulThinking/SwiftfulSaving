@@ -7,6 +7,10 @@
 
 import Foundation
 
+//protocol URLandDataTransformable: URLTransformable, DataTransformable {
+//
+//}
+
 final public actor FMService {
         
     nonisolated static public func printUsage() {
@@ -44,34 +48,31 @@ final public actor FMService {
     }
         
     // MARK: READ
-        
-    /// Get DataTransformable object from File
-    public func object<T:URLTransformable>(key: String) throws -> T {
-        
-        if T.canBeCached {
-            // Check NSCache
-            do {
-                let object: T = try cache.object(key: key)
-                cacheReads += 1
-                log(action: .read, at: .nsCache, key: key)
-                return object
-            } catch {
-                log(action: .notFound, at: .nsCache, key: key)
-            }
+    
+    private func objectFromCache<T>(type: T.Type, key: String) -> T? where T : DataTransformable {
+        do {
+            let object: T = try cache.object(key: key)
+            cacheReads += 1
+            log(action: .read, at: .nsCache, key: key)
+            return object
+        } catch {
+            log(action: .notFound, at: .nsCache, key: key)
+            return nil
         }
-        
-        // Check FileManager
+    }
+    
+    func objectFromFileManager<T>(type: T.Type, key: String) throws -> T where T : URLTransformable {
         do {
             let object: T = try folder.getFile(key: key)
             folderReads += 1
             log(action: .read, at: .fileManager, key: key)
             
-            if T.canBeCached {
-                // Save to cache
-                Task {
-                    saveToCache(object: object, key: key)
-                }
-            }
+//            if typeCanBeCached(T.self) {
+//                // Save to cache
+//                Task {
+//                    saveToCache(object: object, key: key)
+//                }
+//            }
             
             return object
         } catch {
@@ -79,8 +80,68 @@ final public actor FMService {
             throw error
         }
     }
+    
+    public func object<T>(key: String) throws -> T where T : URLTransformable, T : DataTransformable {
+        if let object = objectFromCache(type: T.self, key: key) {
+            return object
+        }
+        print("OBJECT FETCHED FROM FUNC W BOTH")
+        return try objectFromFileManager(type: T.self, key: key)
+    }
+    
+    public func object<T>(key: String) throws -> T where T : URLTransformable {
+        print("OBJECT FETCHED FROM ORIGIN")
+        return try objectFromFileManager(type: T.self, key: key)
+    }
+
+        
+    /// Get DataTransformable object from File
+//    public func object<T:URLTransformable>(key: String) throws -> T {
+//
+//        if let cacheable = T.self as? DataTransformable.Type {
+//
+////            if let object: T = objectFromCache(type: T.Type, key: key) {
+////                return object
+////            }
+//            // Check NSCache
+////            do {
+////                let object: cacheable = try cache.object(key: key)
+////                cacheReads += 1
+////                log(action: .read, at: .nsCache, key: key)
+////                return object
+////            } catch {
+////                log(action: .notFound, at: .nsCache, key: key)
+////            }
+//        }
+//
+//        // Check FileManager
+//        do {
+//            let object: T = try folder.getFile(key: key)
+//            folderReads += 1
+//            log(action: .read, at: .fileManager, key: key)
+//
+//            if typeCanBeCached(T.self) {
+//                // Save to cache
+//                Task {
+//                    saveToCache(object: object, key: key)
+//                }
+//            }
+//
+//            return object
+//        } catch {
+//            log(action: .notFound, at: .fileManager, key: key)
+//            throw error
+//        }
+//    }
                 
     // MARK: WRITE
+    
+    private func typeCanBeCached<T>(_ type: T.Type) -> Bool {
+        if type is DataTransformable.Type {
+            return true
+        }
+        return false
+    }
     
     /// Save DataTransformable object to File and manage folder size if needed
     @discardableResult public func save<T:URLTransformable>(object: T, key: String) throws -> URL {
@@ -88,7 +149,7 @@ final public actor FMService {
             // Add to FileManager
             let url = try folder.save(object: object, key: key)
             
-            if T.canBeCached {
+            if typeCanBeCached(T.self) {
                 // Add to NSCache
                 Task {
                     saveToCache(object: object, key: key)
@@ -105,13 +166,13 @@ final public actor FMService {
     }
     
     private func saveToCache<T:URLTransformable>(object: T, key: String) {
-        do {
-            try cache.save(object, key: key)
-            cacheWrites += 1
-            log(action: .write, at: .nsCache, key: key)
-        } catch {
-            log(action: .write, at: .nsCache, key: key, error: error)
-        }
+//        do {
+//            try cache.save(object, key: key)
+//            cacheWrites += 1
+//            log(action: .write, at: .nsCache, key: key)
+//        } catch {
+//            log(action: .write, at: .nsCache, key: key, error: error)
+//        }
     }
 
     // MARK: DELETE

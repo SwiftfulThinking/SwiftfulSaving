@@ -7,6 +7,11 @@
 
 import Foundation
 
+// Note: Cannot extend Codable, so add implementations to Decodable & Encodable instead.
+
+// Currently using JSONDecoder/JSONEncoder as static computed variables bc we don't want to create new ones for every object.
+// However, we should find a more performant / elegant way to handle this.
+
 // MARK: ENCODABLE
 
 public extension Encodable {
@@ -35,9 +40,10 @@ public extension Decodable {
         guard let data = try? Data(contentsOf: url), let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
         self = object
     }
-
-    static var canBeCached: Bool {
-        true
+    
+    init?(data: Data) {
+        guard let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
+        self = object
     }
 }
 
@@ -62,9 +68,5 @@ extension Array: URLTransformable where Element : Codable {
     public init?(url: URL) {
         guard let data = try? Data(contentsOf: url), let object = try? Self.jsonDecoder.decode(Self.self, from: data) else { return nil }
         self = object
-    }
-
-    public static var canBeCached: Bool {
-        true
     }
 }
