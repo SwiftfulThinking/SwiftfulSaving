@@ -175,26 +175,17 @@ extension FMFolder {
     
     func getFile<T:URLTransformable>(key: String) throws -> T {
         do {
-            let (data, url) = try getFileData(key: key, fileExtension: T.fileExtension)
-            guard let object: T = T(url: url) else {
-                throw FMError.noData
-            }
-            return object
-        } catch {
-            throw error
-        }
-    }
-    
-    /// Get Data from File
-    private func getFileData(key: String, fileExtension: FMFileExtension) throws -> (Data, URL) {
-        do {
-            let url = try fileURL(key: key, fileExtension: fileExtension)
+            let url = try fileURL(key: key, fileExtension: T.fileExtension)
             
             guard directory.urlExists(url: url) else {
                 throw FMError.fileNotFound
             }
+
+            guard let object: T = T(url: url) else {
+                throw FMError.noData
+            }
             
-            return try (Data(contentsOf: url), url)
+            return object
         } catch {
             throw error
         }

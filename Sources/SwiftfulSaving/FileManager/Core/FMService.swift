@@ -121,7 +121,7 @@ final public actor FMService {
 
     // MARK: DELETE
     
-    /// Delete File
+    /// Delete File and remove from cache
     public func delete(key: String, ext: FMFileExtension) throws {
         do {
             try folder.deleteFile(key: key, ext: ext)
@@ -132,6 +132,7 @@ final public actor FMService {
         }
     }
     
+    /// Delete folder
     public func deleteFolder() throws {
         do {
             try folder.deleteFolder()
