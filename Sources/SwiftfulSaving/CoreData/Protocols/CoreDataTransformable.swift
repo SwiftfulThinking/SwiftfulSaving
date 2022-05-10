@@ -8,12 +8,12 @@
 import Foundation
 import CoreData
 
-public protocol IdentifiableByKey: NSManagedObject {
+public protocol CoreDataIdentifiable: NSManagedObject {
      var key: String? { get set }
 }
 
 public protocol CoreDataTransformable {
-    associatedtype Entity: IdentifiableByKey
+    associatedtype Entity: CoreDataIdentifiable
     init?(from: Entity)
     func updatingValues(forEntity: inout Entity)
     var entity: Entity? { get }

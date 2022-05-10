@@ -8,7 +8,7 @@
 import Foundation
 import SwiftfulSaving
 
-extension ItemEntity: IdentifiableByKey { }
+extension ItemEntity: CoreDataIdentifiable { }
 
 struct Item: CoreDataTransformable {
     typealias Entity = ItemEntity
