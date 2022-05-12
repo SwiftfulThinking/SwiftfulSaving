@@ -8,6 +8,11 @@
 import Foundation
 import CoreData
 
+
+// GetObjects -> [Objects] (not entities)
+// DeleteObject -> fetch Entity with Key "x" and delete it
+// SaveObject -> DeleteObject + save
+
 struct CDContext: Hashable {
 
     private let context: NSManagedObjectContext
@@ -30,6 +35,53 @@ struct CDContext: Hashable {
     }
 
     func object<T:CoreDataTransformable>(key: String) throws -> T {
+        // Perform fetch request
+        let fetchResults: [T] = try objects(key: key)
+        
+        // Return first object
+        // There should only ever be one because objects are IdentifiableByKey
+        guard let object: T = fetchResults.first else {
+            throw FMError.fileNotFound
+        }
+        
+        // Return object
+        return object
+    }
+    
+    func objects<T:CoreDataTransformable>(key: String) throws -> [T] {
+        // Perform fetch request
+        let fetchResults: [T.Entity] = try objects(key: key)
+        
+        // Convert fetched [T.Entity] to [T]
+        let returnedItems = fetchResults.compactMap({ T(from: $0) })
+        
+        // Ensure at least 1 item
+        guard !returnedItems.isEmpty else {
+            throw FMError.noData
+        }
+                
+        // Return [T]
+        return returnedItems
+    }
+    
+    func allObjects<T:CoreDataTransformable>() throws -> [T] {
+        // Perform fetch request
+        let fetchResults: [T.Entity] = try objects(predicate: nil, sortDescriptors: nil)
+        
+        // Convert fetched [T.Entity] to [T]
+        let returnedItems = fetchResults.compactMap({ T(from: $0) })
+        
+        // Ensure at least 1 item
+        guard !returnedItems.isEmpty else {
+            throw FMError.noData
+        }
+                
+        // Return [T]
+        return returnedItems
+    }
+    
+    // Fetch objects at KEY from CoreData context and return [NSFetchRequestResult]
+    private func objects<T:NSFetchRequestResult>(key: String) throws -> [T] {
         do {
             // lockedKey is used when saving values via CoreDataTransformable
             let lockedKey = key.lowercasedWithoutSpacesOrPunctuation()
@@ -39,25 +91,19 @@ struct CDContext: Hashable {
 
             // All objects with key
             let objects: [T] = try objects(predicate: predicate, sortDescriptors: nil)
-
-            // Return first object
-            // There should only ever be one because objects are IdentifiableByKey
-            guard let object: T = objects.first else {
-                throw FMError.fileNotFound
-            }
             
             // Return object
-            return object
+            return objects
         } catch {
             throw error
         }
     }
     
-    
-    func objects<T:CoreDataTransformable>(predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) throws -> [T] {
+    // Fetch objects from CoreData context and return [NSFetchRequestResult]
+    private func objects<T:NSFetchRequestResult>(predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) throws -> [T] {
         
         // Create request for all entities within the context of type T.Entity
-        let fetchRequest = NSFetchRequest<T.Entity>(entityName: String(describing: T.Entity.self))
+        let fetchRequest = NSFetchRequest<T>(entityName: String(describing: T.self))
         
         // Add filters
         fetchRequest.predicate = predicate
@@ -68,26 +114,21 @@ struct CDContext: Hashable {
         do {
             // Perform fetch request
             let fetchResults = try context.fetch(fetchRequest)
-            
-            // Convert fetched [T.Entity] to [T]
-            let returnedItems = fetchResults.compactMap({ T(from: $0) })
-            // Ensure at least 1 item
-            guard !returnedItems.isEmpty else {
-                throw FMError.noData
-            }
-            
-            // Return [T]
-            return returnedItems
+            return fetchResults
         } catch {
             throw error
         }
     }
-    // ERROR
-    // PRINTS
+    
     func save<T:CoreDataTransformable>(object: T, key: String) throws -> T {
         do {
+            // If there is a saved Entity in the same Context with the same Key
+            // Fetch saved entity, delete it, and then save new one
+            // Note: CoreData will allow duplicate objects with the same key and here we are avoiding duplicates
+            try? delete(key: key, type: T.self)
+            
             // Create new Entity within Context if needed
-            var entity = object.entity ?? T.Entity(context: context)
+            var entity = T.Entity(context: context)
             
             // Update Entity with values from object
             object.updatingValues(forEntity: &entity)
@@ -108,11 +149,16 @@ struct CDContext: Hashable {
         }
     }
     
-    func delete<T:CoreDataTransformable>(item: T) throws {
-        guard let entity = item.entity else {
+    func delete<T:CoreDataTransformable>(key: String, type: T.Type) throws {
+        // Perform fetch request
+        guard let fetchResults: [T.Entity] = try? objects(key: key) else {
             throw FMError.noData
         }
-        context.delete(entity)
+        
+        // Delete entities (should return an array of 1)
+        for entity in fetchResults {
+            context.delete(entity)
+        }
         
         return try context.save()
     }

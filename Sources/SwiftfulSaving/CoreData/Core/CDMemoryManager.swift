@@ -9,8 +9,7 @@ import Foundation
 import SwiftUI
 
 // This actor will contain all instances of CDContext and CDContainer that are created.
-// It is used to:
-// (1) ensure CDContext/Containers are not duplicated (two folders reading/writing to same location can cause race conditions)
+// It is used to ensure CDContext/Containers are not duplicated (two folders reading/writing to same location can cause race conditions)
 
 @globalActor final actor CDMemoryManager {
     
@@ -95,18 +94,12 @@ import SwiftUI
         let name: String
         let contextReads: Int
         let contextWrites: Int
-        let cacheLimit: Int
-        let cacheReads: Int
-        let cacheWrites: Int
         let container: String
         
         init(service: CDService) async {
             self.name = service.context.container.name + "+" + service.context.name
             self.contextReads = await service.contextReads
             self.contextWrites = await service.contextWrites
-            self.cacheLimit = service.cache.cache.totalCostLimit
-            self.cacheReads = await service.cacheReads
-            self.cacheWrites = await service.cacheWrites
             self.container = service.context.container.name
         }
         
@@ -116,9 +109,6 @@ import SwiftUI
         - Context Name: \(name)
         - Context Reads: \(contextReads)
         - Context Writes: \(contextWrites)
-        - Cache Limit: \(cacheLimit)
-        - Cache Reads: \(cacheReads)
-        - Cache Writes: \(cacheWrites)
         - Container Name: \(container)
         
         """

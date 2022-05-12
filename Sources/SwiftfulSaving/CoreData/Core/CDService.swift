@@ -16,17 +16,13 @@ final public actor CDService {
     }
     
     let context: CDContext
-    let cache: CDCache
     
     internal var contextReads: Int = 0
     internal var contextWrites: Int = 0
-    internal var cacheReads: Int = 0
-    internal var cacheWrites: Int = 0
 
     public init(container: CDContainer, contextName: String, cacheLimitInMB: Double? = nil) {
         let newContext = CDContext(container: container, contextName: contextName)
         self.context = newContext
-        self.cache = CDCache(limitInMB: cacheLimitInMB)
         
         Task.detached {
             // Produces a warning that 'self' cannot be captured
@@ -39,25 +35,10 @@ final public actor CDService {
 
     // Convert to T.Entity here and pass that protocol to next function
     public func object<T:CoreDataTransformable>(key: String) throws -> T {
-                        
-        // Check NSCache
-        do {
-            let object: T = try cache.object(key: key)
-            cacheReads += 1
-            log(action: .read, at: .nsCache, key: key)
-            return object
-        } catch {
-            log(action: .notFound, at: .nsCache, key: key)
-        }
-        
-        // Check CoreData
         do {
             let object: T = try context.object(key: key)
             contextReads += 1
             log(action: .read, at: .coreData, key: key)
-            Task {
-                saveToCache(object: object, key: key)
-            }
             return object
         } catch {
             log(action: .notFound, at: .coreData, key: key)
@@ -67,20 +48,13 @@ final public actor CDService {
     
     public func allObjects<T:CoreDataTransformable>() throws -> [T] {
         // Check CoreData
-        let key = "N/A - All Objects"
         do {
-            let objects: [T] = try context.objects(predicate: nil, sortDescriptors: nil)
+            let objects: [T] = try context.allObjects()
             contextReads += 1
-            log(action: .read, at: .coreData, key: key)
-            Task {
-                for object in objects {
-                    guard let key = object.entity?.key else { continue }
-                    saveToCache(object: object, key: key)
-                }
-            }
+            log(action: .read, at: .coreData, key: "N/A - All Objects")
             return objects
         } catch {
-            log(action: .notFound, at: .coreData, key: key)
+            log(action: .notFound, at: .coreData, key: "N/A - All Objects")
             throw error
         }
     }
@@ -90,12 +64,6 @@ final public actor CDService {
         do {
             // Add to CoreData
             let updatedItem: T = try context.save(object: object, key: key)
-            
-            // Add to NSCache (must be after update, with new Entity)
-            Task {
-                saveToCache(object: updatedItem, key: key)
-            }
-            
             contextWrites += 1
             log(action: .write, at: .coreData, key: key)
             return updatedItem
@@ -104,21 +72,10 @@ final public actor CDService {
             throw error
         }
     }
-    
-    private func saveToCache<T:CoreDataTransformable>(object: T, key: String) {
+        
+    public func delete<T:CoreDataTransformable>(key: String, type: T.Type) throws {
         do {
-            try cache.save(object, key: key)
-            cacheWrites += 1
-            log(action: .write, at: .nsCache, key: key)
-        } catch {
-            log(action: .write, at: .nsCache, key: key, error: error)
-        }
-    }
-    
-    public func delete<T:CoreDataTransformable>(key: String, object: T) throws {
-        do {
-            try context.delete(item: object)
-            cache.delete(key: key)
+            try context.delete(key: key, type: type)
             log(action: .delete, at: .coreData, key: key)
         } catch {
             log(action: .delete, at: .coreData, key: key, error: error)
@@ -129,7 +86,6 @@ final public actor CDService {
         let key = "N/A - All Objects"
         do {
             try context.deleteAllObjects(withType: type)
-            cache.deleteAllObjects()
             log(action: .delete, at: .coreData, key: key)
         } catch {
             log(action: .delete, at: .coreData, key: key, error: error)

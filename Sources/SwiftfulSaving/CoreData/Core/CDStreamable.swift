@@ -48,7 +48,8 @@ import SwiftUI
 
             // Ensure user wrappedValue wasn't set between init and now
             // Would only happen if wrappedValue is set immediately after init
-            guard wrappedValue?.entity?.key == initialValue?.entity?.key else { return }
+//            guard wrappedValue?.entity?.key == initialValue?.entity?.key else { return }
+            // Note: update here with local state variable!
 
             if let savedValue = savedValue {
                 // Use saved value
@@ -67,9 +68,7 @@ import SwiftUI
         Task {
             guard let newValue = newValue else {
                 // If newValue == nil, then delete file
-                // However, we need reference to Entity in order to delete it (lastValue)
-                guard let lastValue = wrappedValue else { return }
-                try await service.delete(key: key, object: lastValue)
+                try await service.delete(key: key, type: Value.self)
                 return
             }
             

@@ -16,5 +16,4 @@ public protocol CoreDataTransformable {
     associatedtype Entity: CoreDataIdentifiable
     init?(from: Entity)
     func updatingValues(forEntity: inout Entity)
-    var entity: Entity? { get }
 }

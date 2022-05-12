@@ -34,7 +34,7 @@ struct Item: CoreDataTransformable {
     mutating func update(title: String) {
         self.title = title
     }
-    
+        
     func updatingValues(forEntity entity: inout Entity) {
         entity.title = title
     }
