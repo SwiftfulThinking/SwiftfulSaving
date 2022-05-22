@@ -19,6 +19,7 @@ final public actor UDService {
         
     public func object<T:UDSerializable>(key: String) throws -> T {
         guard let object = suite.value(forKey: key) else {
+            log(action: .notFound, key: key)
             throw UDError.objectNotFound
         }
         

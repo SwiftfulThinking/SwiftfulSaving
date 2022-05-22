@@ -60,7 +60,7 @@ final public actor CDService {
     }
 
     /// Save DataTransformable object to File and manage folder size if needed
-    public func save<T:CoreDataTransformable>(object: T, key: String) throws -> T {
+    @discardableResult public func save<T:CoreDataTransformable>(object: T, key: String) throws -> T {
         do {
             // Add to CoreData
             let updatedItem: T = try context.save(object: object, key: key)
