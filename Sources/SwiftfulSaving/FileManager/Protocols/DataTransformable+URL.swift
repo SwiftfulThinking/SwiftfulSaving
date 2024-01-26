@@ -37,7 +37,7 @@ public struct UrlMP4 {
 }
 
 extension UrlMP4: DataTransformable {
-
+    
     public static var fileExtension: FMFileExtension {
         .mp4
     }
@@ -47,10 +47,12 @@ extension UrlMP4: DataTransformable {
     }
 
     
-    public init?(data: Data) {
-        guard let url = URL(dataRepresentation: data, relativeTo: nil) else { return nil }
+    public init?(data: Data, url: URL?) {
+        guard let url = url ?? URL(dataRepresentation: data, relativeTo: nil) else { return nil }
         self.url = url
     }
+
+    public static let canBeCached: Bool = false
 
 }
 
@@ -68,9 +70,10 @@ extension UrlMP3: DataTransformable {
         try? Data(contentsOf: url)
     }
 
-    public init?(data: Data) {
-        guard let url = URL(dataRepresentation: data, relativeTo: nil) else { return nil }
+    public init?(data: Data, url: URL?) {
+        guard let url = url ?? URL(dataRepresentation: data, relativeTo: nil) else { return nil }
         self.url = url
     }
 
+    public static let canBeCached: Bool = false
 }
