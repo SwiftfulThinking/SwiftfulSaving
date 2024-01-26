@@ -43,39 +43,39 @@ import SwiftUI
     /// Get saved object from FileManager. If saved value exists, publish value to currentValue publisher. If no saved value exists and an initial value was provided, save initial value.
     ///  - Warning: THIS SHOULD ONLY BE CALLED ONCE, FROM THE INIT.
     private func getObject(initialValue: Value? = nil) {
-        Task {
-            let savedValue: Value? = try? await service.object(key: key)
-            
-            // Ensure user wrappedValue wasn't set between init and now
-            // Would only happen if wrappedValue is set immediately after init
-            guard wrappedValue?.toData() == initialValue?.toData() else { return }
-
-            if let savedValue = savedValue {
-                // Use saved value
-                currentValue.send(savedValue)
-            } else if let initialValue = initialValue {
-                // Nothing was saved, save new initialValue (already set to currentValue publisher on init() )
-                setObject(newValue: initialValue)
-            }
-        }
+//        Task {
+//            let savedValue: Value? = try? await service.object(key: key)
+//            
+//            // Ensure user wrappedValue wasn't set between init and now
+//            // Would only happen if wrappedValue is set immediately after init
+//            guard wrappedValue?.toData() == initialValue?.toData() else { return }
+//
+//            if let savedValue = savedValue {
+//                // Use saved value
+//                currentValue.send(savedValue)
+//            } else if let initialValue = initialValue {
+//                // Nothing was saved, save new initialValue (already set to currentValue publisher on init() )
+//                setObject(newValue: initialValue)
+//            }
+//        }
     }
             
     /// If newValue is provided, save object to FileManager. If newValue is nil, delete the file if it exists. Publish result to currentValue publisher.
     private func setObject(newValue: Value?) {
         // Publish value first, for UI & data race issues
         // Then persist to FileManager
-        currentValue.send(newValue)
-
-        Task {
-            guard let newValue = newValue else {
-                // If newValue == nil, then delete file
-                try await service.delete(key: key, ext: Value.fileExtension)
-                return
-            }
-            
-            // If newValue != nil, save file
-            try await service.save(object: newValue, key: key)
-        }
+//        currentValue.send(newValue)
+//
+//        Task {
+//            guard let newValue = newValue else {
+//                // If newValue == nil, then delete file
+//                try await service.delete(key: key, ext: Value.fileExtension)
+//                return
+//            }
+//            
+//            // If newValue != nil, save file
+//            try await service.save(object: newValue, key: key)
+//        }
     }
     
 }
